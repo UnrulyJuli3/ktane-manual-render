@@ -1,17 +1,22 @@
-﻿using System.Drawing.Imaging;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using PdfiumViewer;
 using RT.PropellerApi;
 using RT.Servers;
 using RT.Util.ExtensionMethods;
 using HttpMethod = RT.Servers.HttpMethod;
 
-namespace KtaneManualRenderPropeller
+namespace Propeller.KTANE
 {
-    public sealed class ManualRenderModule : PropellerModuleBase<ManualRenderSettings>
+    public sealed class KtaneManualRenderer : PropellerModuleBase<KtaneManualRendererSettings>
     {
-        public override string Name => "KTaNE Manual Renderer";
+        public override string Name => "KTANE Manual Renderer";
 
-        private readonly Dictionary<string, (PdfDocument pdf, byte[][] pages, DateTime lastAccess)> _pdfs = [];
+        private readonly Dictionary<string, (PdfDocument pdf, byte[][] pages, DateTime lastAccess)> _pdfs = new();
         private UrlResolver _resolver;
 
         public override void Init()
@@ -80,7 +85,7 @@ namespace KtaneManualRenderPropeller
                     using var stream = new MemoryStream();
                     image.Save(stream, ImageFormat.Png);
                     pages[page.Value] = stream.ToArray();
-                    if (!pages.Contains(null))
+                    if (pages.All(b => b != null))
                         pdf = null;
                 }
                 lock (_pdfs)
@@ -115,7 +120,7 @@ namespace KtaneManualRenderPropeller
         }
     }
 
-    public sealed class ManualRenderSettings
+    public sealed class KtaneManualRendererSettings
     {
         public string UrlTemplate = @"https://ktane.timwi.de/PDF/{0}.pdf";
     }
