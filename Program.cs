@@ -1,13 +1,13 @@
 ﻿using RT.PropellerApi;
 using RT.Util;
 
-namespace KtaneManualRenderPropeller
+namespace Propeller.KTANE
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            PropellerUtil.RunStandalone(PathUtil.AppPathCombine("settings.json"), new ManualRenderModule());
+            PropellerUtil.RunStandalone(PathUtil.AppPathCombine("settings.json"), new KtaneManualRenderer());
         }
     }
 }
